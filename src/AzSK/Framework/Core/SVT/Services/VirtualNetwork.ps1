@@ -116,11 +116,14 @@ class VirtualNetwork: SVTIaasBase
 							$nsglist | ForEach-Object{
 								$rules = $_.Properties.SecurityRules
 								$rules | ForEach-Object{
-									$ruleproperties = $_.Properties
-									if((($ruleproperties.Direction -eq "outbound") -or ($ruleproperties.Direction -eq "inbound")) -and $ruleproperties.SourceAddressPrefix -eq '*' -and $ruleproperties.DestinationAddressPrefix -eq '*' -and $ruleproperties.Access -eq "allow")
-									{
-										$InvalidRulesList += $_
-									}
+                                    $ruleproperties = $_.Properties
+                                    if([Helpers]::CheckMember($ruleproperties,"SourceAddressPrefix") -and [Helpers]::CheckMember($ruleproperties,"DestinationAddressPrefix"))
+                                    {
+                                        if((($ruleproperties.Direction -eq "outbound") -or ($ruleproperties.Direction -eq "inbound")) -and $ruleproperties.SourceAddressPrefix -eq '*' -and $ruleproperties.DestinationAddressPrefix -eq '*' -and $ruleproperties.Access -eq "allow")
+                                        {
+                                            $InvalidRulesList += $_
+                                        }
+                                    }
 								}
 							}
 					$currentsubnet=$_
